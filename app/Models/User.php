@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+// [Metode 5: Model] — User mewarisi Authenticatable dari Laravel
+// Ini yang membuat Auth::attempt(), Auth::user(), Auth::check() bisa bekerja
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,19 +14,21 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * [Metode 5: $fillable] — daftar kolom yang boleh diisi via User::create()
+     * Tanpa ini, User::create([...]) akan error "mass assignment" protection.
+     * Kolom yang ada di sini harus sesuai dengan kolom di migrasi (Metode 4).
      *
      * @var list<string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',
-        'nim',
-        'prodi',
-        'fakultas',
-        'no_hp',
+        'name',       // dari input: nama_lengkap
+        'email',      // dari input: email
+        'password',   // dari input: password (auto-hash via cast di bawah)
+        'role',       // diset otomatis: 'tenant' saat register
+        'nim',        // belum dipakai di register, tapi bisa ditambahkan nanti
+        'prodi',      // belum dipakai di register
+        'fakultas',   // belum dipakai di register
+        'no_hp',      // dari input: nomor_telepon
     ];
 
     /**
@@ -39,7 +42,10 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * [Metode 5: Casts] — 'password' => 'hashed' membuat Laravel otomatis
+     * menjalankan Hash::make() setiap kali $user->password = 'plain_text' di-assign.
+     * Ini yang membuat User::create(['password' => $request->password]) aman,
+     * karena password disimpan ke DB sebagai bcrypt hash ($2y$12$...), bukan plain text.
      *
      * @return array<string, string>
      */
@@ -47,10 +53,14 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password' => 'hashed',   // [Metode 3 & 5: Password Hashing] — auto bcrypt
         ];
     }
 
+    /**
+     * [Metode 2: Auth Facade helper] — dipakai oleh SuperadminMiddleware & AuthController
+     * untuk mengecek apakah user ini admin.
+     */
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
