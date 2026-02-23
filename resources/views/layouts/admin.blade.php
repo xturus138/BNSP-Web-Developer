@@ -4,9 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'INBISKOM')</title>
+    <title>@yield('title', 'Admin - INBISKOM')</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100 min-h-screen flex" x-data="{ sidebarOpen: true }">
@@ -27,47 +33,14 @@
         <nav class="flex-1 py-4 space-y-1 px-2">
 
             {{-- Dashboard --}}
-            <a href="{{ route('tenant.dashboard') }}"
+            <a href="{{ route('admin.dashboard') }}"
                 class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-colors
-                    {{ request()->routeIs('tenant.dashboard') ? 'bg-sky-50 text-sky-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
+                    {{ request()->routeIs('admin.dashboard') ? 'bg-sky-50 text-sky-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
                 Dashboard
-            </a>
-
-            {{-- Pendaftaran Tenant --}}
-            <a href="{{ route('tenant.pendaftaran') }}"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-colors
-                    {{ request()->routeIs('tenant.pendaftaran') ? 'bg-sky-50 text-sky-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
-                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Pendaftaran Tenant
-            </a>
-
-            {{-- Detail Tenant --}}
-            <a href="{{ route('tenant.detail') }}"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-colors
-                    {{ request()->routeIs('tenant.detail') ? 'bg-sky-50 text-sky-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
-                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Detail Tenant
-            </a>
-
-            {{-- Profil --}}
-            <a href="{{ route('tenant.profil') }}"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-colors
-                    {{ request()->routeIs('tenant.profil') ? 'bg-sky-50 text-sky-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
-                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                Profil
             </a>
 
         </nav>
@@ -104,11 +77,11 @@
                 <button @click="open = !open"
                     class="flex items-center gap-2.5 hover:bg-gray-50 rounded-lg px-2 py-1.5 transition-colors">
                     <div class="w-8 h-8 rounded-full bg-sky-500 flex items-center justify-center text-white text-xs font-semibold shrink-0">
-                        RA
+                        {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
                     </div>
                     <div class="text-left leading-tight">
-                        <p class="text-sm font-semibold text-gray-800">Raditya Aryabudhi Ramadhan</p>
-                        <p class="text-xs text-gray-400">10120123</p>
+                        <p class="text-sm font-semibold text-gray-800">{{ Auth::user()->name }}</p>
+                        <p class="text-xs text-gray-400">Admin</p>
                     </div>
                     <svg class="w-4 h-4 text-gray-400 ml-1 transition-transform" :class="open ? 'rotate-180' : ''"
                         fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -119,7 +92,7 @@
                 {{-- Dropdown Menu --}}
                 <div x-show="open" @click.outside="open = false" x-transition
                     class="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
-                    <form method="POST" action="{{ route('logout') }}">
+                    <form method="POST" action="{{ route('admin.logout') }}">
                         @csrf
                         <button type="submit"
                             class="flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors w-full">
@@ -146,6 +119,7 @@
     {{-- Alpine.js --}}
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
+    @stack('modals')
 </body>
 
 </html>

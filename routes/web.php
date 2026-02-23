@@ -3,6 +3,9 @@
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Tenant\DashboardController;
+use App\Http\Controllers\Tenant\DetailTenantController;
+use App\Http\Controllers\Tenant\PendaftaranController;
+use App\Http\Controllers\Tenant\ProfilController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,9 +32,16 @@ Route::post('/admin/logout', [AuthController::class, 'adminLogout'])
 // Admin — Protected
 Route::middleware(['auth', 'superadmin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/tenant/{tenant}', [AdminDashboardController::class, 'show'])->name('admin.tenant.show');
+    Route::patch('/tenant/{tenant}/status', [AdminDashboardController::class, 'updateStatus'])->name('admin.tenant.updateStatus');
 });
 
 // Tenant — Protected
 Route::middleware('keycode')->group(function () {
     Route::get('/tenant/dashboard', [DashboardController::class, 'index'])->name('tenant.dashboard');
+    Route::get('/tenant/pendaftaran', [PendaftaranController::class, 'index'])->name('tenant.pendaftaran');
+    Route::post('/tenant/pendaftaran', [PendaftaranController::class, 'store'])->name('tenant.pendaftaran.store');
+    Route::get('/tenant/detail', [DetailTenantController::class, 'index'])->name('tenant.detail');
+    Route::get('/tenant/profil', [ProfilController::class, 'index'])->name('tenant.profil');
+    Route::put('/tenant/profil', [ProfilController::class, 'update'])->name('tenant.profil.update');
 });

@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use App\Models\Tenant;
+use App\Models\AnggotaTim;
 use App\Models\Produk;
 use App\Models\Proposal;
-use App\Models\AnggotaTim;
+use App\Models\Tenant;
+use App\Models\User;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -123,5 +123,8 @@ class DatabaseSeeder extends Seeder
             'nim' => '18002222',
             'prodi' => 'Ilmu Komputer',
         ]);
+
+        // 4. Masif Seeding (25 Tenant tambahan)
+        $this->call(TenantSeeder::class);
     }
 }
