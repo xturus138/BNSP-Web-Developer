@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AdminLoginRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -54,7 +55,39 @@ class AuthController extends Controller
 
     public function register(): View
     {
-        return view('auth.register');
+        $a = rand(1, 15);
+        $b = rand(1, 15);
+        session(['captcha_answer' => $a + $b]);
+
+        return view('auth.register', compact('a', 'b'));
+    }
+
+    public function tenantRegister(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'nama_lengkap' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'unique:users,email'],
+            'nomor_telepon' => ['nullable', 'string', 'max:20'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'captcha' => ['required', 'integer'],
+        ]);
+
+        if ((int) $request->captcha !== (int) session('captcha_answer')) {
+            return back()
+                ->withInput($request->except('password', 'password_confirmation'))
+                ->withErrors(['captcha' => 'Jawaban captcha salah.']);
+        }
+
+        User::create([
+            'name' => $request->nama_lengkap,
+            'email' => $request->email,
+            'no_hp' => $request->nomor_telepon,
+            'password' => $request->password,
+            'role' => 'tenant',
+        ]);
+
+        return redirect()->route('login')
+            ->with('success', 'Pendaftaran berhasil! Silakan login.');
     }
 
     public function tenantLogout(Request $request): RedirectResponse

@@ -23,7 +23,7 @@
         </p>
 
         {{-- Form --}}
-        <form method="POST" action="{{ route('register') }}" class="w-full space-y-4">
+        <form method="POST" action="{{ route('register.post') }}" class="w-full space-y-4">
             @csrf
 
             {{-- Nama Lengkap --}}
@@ -95,6 +95,20 @@
                     placeholder="Ulangi Password"
                     class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent">
                 @error('password_confirmation')
+                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Captcha --}}
+            <div>
+                <label for="captcha" class="block text-sm font-medium text-gray-700 mb-1">{{ $a }} + {{ $b }} = ?</label>
+                <input
+                    id="captcha"
+                    type="number"
+                    name="captcha"
+                    placeholder="Jawab pertanyaan di atas"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent">
+                @error('captcha')
                 <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                 @enderror
             </div>

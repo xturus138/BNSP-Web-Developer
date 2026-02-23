@@ -22,6 +22,13 @@
             Silakan login untuk masuk ke sistem<br>INBISKOM
         </p>
 
+        {{-- Success Message --}}
+        @if (session('success'))
+        <div class="w-full bg-green-50 border border-green-200 rounded-lg px-4 py-2.5 mb-4">
+            <p class="text-sm text-green-700">{{ session('success') }}</p>
+        </div>
+        @endif
+
         {{-- Form --}}
         <form method="POST" action="{{ route('login') }}" class="w-full space-y-4">
             @csrf
