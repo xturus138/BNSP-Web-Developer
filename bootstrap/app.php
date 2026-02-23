@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\KeycodeAccess;
+use App\Http\Middleware\SuperadminMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -11,7 +13,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'superadmin' => SuperadminMiddleware::class,
+            'keycode' => KeycodeAccess::class,
+        ]);
+
+        $middleware->redirectGuestsTo(fn () => route('admin.login'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
