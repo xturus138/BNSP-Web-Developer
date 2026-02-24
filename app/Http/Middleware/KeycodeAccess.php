@@ -11,6 +11,11 @@ class KeycodeAccess
     public function handle(Request $request, Closure $next): Response
     {
         if (auth()->check()) {
+            // [DEMO READY] Cegah admin masuk ke area tenant via URL manual
+            if (auth()->user()->isAdmin()) {
+                return redirect()->route('admin.dashboard');
+            }
+
             return $next($request);
         }
 

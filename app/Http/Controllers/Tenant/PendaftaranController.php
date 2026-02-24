@@ -34,6 +34,12 @@ class PendaftaranController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // [SAFETY CHECK] Pastikan user belum punya tenant (mencegah bypass via endpoint)
+        if (Auth::user()->tenant) {
+            return redirect()->route('tenant.detail')
+                ->with('info', 'Anda sudah terdaftar sebagai tenant.');
+        }
+
         // [Metode 1: Validasi] — validate() semua field, termasuk MIME & ukuran untuk file
         $validated = $request->validate([
             // Tenant
@@ -79,7 +85,7 @@ class PendaftaranController extends Controller
                 ->with('success', 'Pendaftaran tenant berhasil diajukan!');
         } catch (\Exception $e) {
             // [Metode 1: Error handling + Log]
-            Log::error('Gagal pendaftaran tenant: '.$e->getMessage());
+            Log::error('Gagal pendaftaran tenant: ' . $e->getMessage());
 
             return back()
                 ->withInput()
