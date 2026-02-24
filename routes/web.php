@@ -35,6 +35,7 @@ Route::middleware(['auth', 'superadmin'])->prefix('admin')->group(function () {
     Route::get('/monitoring', [\App\Http\Controllers\Admin\MonitoringController::class, 'index'])->name('admin.monitoring');
     Route::get('/tenant/{tenant}', [AdminDashboardController::class, 'show'])->name('admin.tenant.show');
     Route::patch('/tenant/{tenant}/status', [AdminDashboardController::class, 'updateStatus'])->name('admin.tenant.updateStatus');
+    Route::delete('/tenant/{tenant}', [AdminDashboardController::class, 'destroy'])->name('admin.tenant.destroy');
 });
 
 // Tenant — Protected

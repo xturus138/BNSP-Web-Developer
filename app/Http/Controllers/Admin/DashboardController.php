@@ -13,7 +13,7 @@ class DashboardController extends Controller
     public function dashboard(Request $request): View
     {
         // 1. Base Query with Eager Loading (N+1 Prevention)
-        $query = Tenant::with(['user', 'proposals' => fn ($q) => $q->latest()->limit(1), 'anggotaTims']);
+        $query = Tenant::with(['user', 'proposals' => fn($q) => $q->latest()->limit(1), 'anggotaTims']);
 
         // 2. Apply Scopes (Logic moved to Model)
         $query->dateRange($request->tanggal_awal, $request->tanggal_akhir)
@@ -69,5 +69,43 @@ class DashboardController extends Controller
         }
 
         return back()->with('success', "Status tenant {$tenant->nama_tenant} berhasil diperbarui.");
+    }
+
+    public function destroy(Tenant $tenant): RedirectResponse
+    {
+        try {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($tenant) {
+                // 1. Delete Files
+                if ($tenant->logo) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($tenant->logo);
+                }
+
+                foreach ($tenant->proposals as $proposal) {
+                    if ($proposal->file_dokumen) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($proposal->file_dokumen);
+                    }
+                }
+
+                foreach ($tenant->produks as $produk) {
+                    if ($produk->foto_produk) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($produk->foto_produk);
+                    }
+                }
+
+                // 2. Delete Related Data (Manual or Cascade)
+                $tenant->anggotaTims()->delete();
+                $tenant->produks()->delete();
+                $tenant->proposals()->delete();
+
+                // 3. Delete Tenant
+                $tenant->delete();
+            });
+
+            return redirect()->route('admin.dashboard')
+                ->with('success', "Tenant {$tenant->nama_tenant} berhasil dihapus.");
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Gagal menghapus tenant: " . $e->getMessage());
+            return back()->with('error', "Gagal menghapus tenant. Silakan coba lagi.");
+        }
     }
 }

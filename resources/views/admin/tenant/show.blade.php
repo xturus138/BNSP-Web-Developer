@@ -326,6 +326,27 @@
                     @endif
                 </div>
             </div>
+
+            {{-- Danger Zone: Delete Tenant --}}
+            <div class="mt-8 pt-8 border-t border-gray-100">
+                <div class="bg-red-50 rounded-2xl border border-red-100 p-6 flex items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-sm font-bold text-red-800">Zona Bahaya</h3>
+                        <p class="text-xs text-red-600 mt-1">Menghapus tenant akan menghapus seluruh data terkait (proposal, produk, anggota tim) secara permanen.</p>
+                    </div>
+                    <form action="{{ route('admin.tenant.destroy', $tenant) }}" method="POST"
+                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus tenant {{ $tenant->nama_tenant }}? Tindakan ini tidak dapat dibatalkan.')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 transition-colors shadow-sm shadow-red-100 flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                            </svg>
+                            Hapus Tenant
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
