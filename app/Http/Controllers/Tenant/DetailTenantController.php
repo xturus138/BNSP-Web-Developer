@@ -12,6 +12,11 @@ class DetailTenantController extends Controller
     public function index(): View|RedirectResponse
     {
         $user = Auth::user();
+
+        if (! $user) {
+            return redirect()->route('login');
+        }
+
         $tenant = $user->tenant;
 
         if (! $tenant) {

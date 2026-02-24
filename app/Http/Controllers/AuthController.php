@@ -45,7 +45,6 @@ class AuthController extends Controller
      */
     public function tenantLogin(Request $request): RedirectResponse
     {
-        // [Metode 2: Validasi] — Laravel validation rules, jika gagal otomatis redirect back + $errors
         $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
@@ -53,15 +52,12 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        // [Metode 1: Auth::attempt()] — mencari user by email, lalu Hash::check() password vs bcrypt hash di DB
-        // [Metode 3: Password Hashing] — Hash::check() dipanggil otomatis di dalam Auth::attempt()
         if (! Auth::attempt($credentials)) {
             return back()
                 ->withInput($request->only('email'))
                 ->withErrors(['email' => 'Email atau password salah.']);
         }
 
-        // [Metode 2: Auth Facade] — Auth::user() mengambil user yang baru login, cek role-nya
         if (Auth::user()->role !== 'tenant') {
             Auth::logout();
 
@@ -70,9 +66,7 @@ class AuthController extends Controller
                 ->withErrors(['email' => 'Akun ini bukan akun tenant.']);
         }
 
-        // [Metode 5: Session] — regenerate session ID (cegah session fixation attack)
         $request->session()->regenerate();
-        // [Metode 5: Session] — simpan flag wdp_access=true agar KeycodeAccess middleware meloloskan
         $request->session()->put('wdp_access', true);
 
         return redirect()->route('tenant.dashboard');
