@@ -32,6 +32,7 @@ Route::post('/admin/logout', [AuthController::class, 'adminLogout'])
 // Admin — Protected
 Route::middleware(['auth', 'superadmin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/monitoring', [\App\Http\Controllers\Admin\MonitoringController::class, 'index'])->name('admin.monitoring');
     Route::get('/tenant/{tenant}', [AdminDashboardController::class, 'show'])->name('admin.tenant.show');
     Route::patch('/tenant/{tenant}/status', [AdminDashboardController::class, 'updateStatus'])->name('admin.tenant.updateStatus');
 });

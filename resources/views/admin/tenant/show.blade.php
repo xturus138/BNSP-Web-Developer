@@ -300,11 +300,6 @@
                     @if($tenant->latest_proposal)
                     <div class="p-4 rounded-xl border border-sky-100 bg-sky-50/50 flex flex-col gap-3">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-white border border-sky-200 flex items-center justify-center text-sky-600">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5z" />
-                                </svg>
-                            </div>
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-bold text-gray-900 truncate">{{ $tenant->latest_proposal->judul_proposal }}</p>
                                 <p class="text-[10px] text-gray-500">Diajukan: {{ $tenant->latest_proposal->tanggal_pengajuan ? \Carbon\Carbon::parse($tenant->latest_proposal->tanggal_pengajuan)->format('d/m/Y') : '-' }}</p>
